@@ -1,4 +1,4 @@
-import { Animated, View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator, ViewStyle, TextStyle } from "react-native";
+import { Animated, View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator, ViewStyle, Image, StatusBar } from "react-native";
 import React, { useEffect, useState, useRef } from 'react';
 import * as Font from 'expo-font';
 import { setStatusBarNetworkActivityIndicatorVisible } from "expo-status-bar";
@@ -115,9 +115,28 @@ const App = () => {
 
 	return (
 		<View style={styles.container}>
+			<StatusBar
+			backgroundColor={"#09060d"}
+			barStyle={"light-content"}
+			/>
 			<View style={styles.col}>
 				<DistroButton>
 					<Text style={styles.distroBtnTxt}>Arch</Text>
+					<Text style={styles.distroBtnCred}>The Arch Linux community</Text>
+					<Text style={styles.distroBtnVersion}>v2024.09.01</Text>
+					<Image source={require('./src/assets/arch.png')} style={styles.distroImg}></Image>
+				</DistroButton>
+				<DistroButton>
+					<Text style={styles.distroBtnTxt}>Debian</Text>
+					<Text style={styles.distroBtnCred}>The Debian Project</Text>
+					<Text style={styles.distroBtnVersion}>v12.7</Text>
+					<Image source={require('./src/assets/debian.png')} style={styles.distroImg}></Image>
+				</DistroButton>
+				<DistroButton>
+					<Text style={styles.distroBtnTxt}>Ubuntu</Text>
+					<Text style={styles.distroBtnCred}>Canonical</Text>
+					<Text style={styles.distroBtnVersion}>v24.04.1 LTS</Text>
+					<Image source={require('./src/assets/ubuntu.png')} style={styles.distroImg}></Image>
 				</DistroButton>
 			</View>
       		<View style={styles.navbar}>
@@ -154,7 +173,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		position: "absolute",
 		top: "10%",
-
+		rowGap: 20,
 	},
 	distroBtnTxt: {
 		color: "white",
@@ -167,18 +186,39 @@ const styles = StyleSheet.create({
 		width: "80%",
 		height: 20 * vh, 
 		display: "flex",
-		justifyContent: "center",
-		alignItems: "center",
 		borderRadius: 15,
+		paddingVertical: 10,
+		paddingHorizontal: 20, 
 	} as ViewStyle,
-  navbar: {
+	distroBtnCred: {
+		color: "white",
+		fontFamily: "Montserrat-thin",
+		fontSize: 1.5*vh,
+	},
+	distroBtnVersion: {
+		color: "white",
+		fontFamily: "Montserrat-thin",
+		position: "relative",
+		top: 45,
+	},
+	distroImg: {
+		width: 100,
+		height: 100,
+		resizeMode: "contain",
+		position: "relative",
+		top: -65,
+		left: 150,
+	},
+  	navbar: {
 		display: "flex",
-    flexDirection: "row",
+    	flexDirection: "row",
 		backgroundColor: "#261f2e",
-		width: "100%",
+		width: "90%",
 		height: 6 * vh,
 		position: "absolute",
-		top: "94%",
+		top: "91%",
+		left: "5%",
+		borderRadius: 999,
 	},
 	navbarTxt: {
 		color: "white",
