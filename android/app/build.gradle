@@ -144,6 +144,12 @@ android {
             useLegacyPackaging (findProperty('expo.useLegacyPackaging')?.toBoolean() ?: false)
         }
     }
+
+    sourceSets {
+        main {
+            assets.srcDirs = ['src/main/assets']
+        }
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`

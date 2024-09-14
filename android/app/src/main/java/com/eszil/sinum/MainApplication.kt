@@ -2,7 +2,6 @@ package com.eszil.sinum
 
 import android.app.Application
 import android.content.res.Configuration
-
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
 import com.facebook.react.ReactNativeHost
@@ -11,9 +10,10 @@ import com.facebook.react.ReactHost
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.load
 import com.facebook.react.defaults.DefaultReactNativeHost
 import com.facebook.soloader.SoLoader
-
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
+
+import com.eszil.sinum.ProotPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -21,9 +21,11 @@ class MainApplication : Application(), ReactApplication {
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-            // Packages that cannot be autolinked yet can be added manually here, for example:
-            // packages.add(new MyReactNativePackage());
-            return PackageList(this).packages
+            val packages = PackageList(this).packages
+
+            packages.add(ProotPackage())
+
+            return packages
           }
 
           override fun getJSMainModuleName(): String = ".expo/.virtual-metro-entry"
@@ -42,7 +44,6 @@ class MainApplication : Application(), ReactApplication {
     super.onCreate()
     SoLoader.init(this, false)
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      // If you opted-in for the New Architecture, we load the native entry point for this app.
       load()
     }
     ApplicationLifecycleDispatcher.onApplicationCreate(this)
