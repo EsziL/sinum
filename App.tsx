@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator } from "react-native";
-import React, { useEffect, useState } from 'react';
+import { Animated, View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator, ViewStyle, TextStyle } from "react-native";
+import React, { useEffect, useState, useRef } from 'react';
 import * as Font from 'expo-font';
+import { setStatusBarNetworkActivityIndicatorVisible } from "expo-status-bar";
 
 interface DistroBtnProps {
 	children: React.ReactNode;
@@ -9,22 +10,84 @@ interface DistroBtnProps {
 const DistroButton: React.FC<DistroBtnProps> = ({ children }) => {
 	const [pressed, setPressed] = useState(false);
 
-	const handlePressIn = ()=>{setPressed(true);};
-	const handlePressOut = ()=>{setPressed(false);};
+	const bgColorAnim = useRef(new Animated.Value(0)).current;
+
+	const backgroundColor = bgColorAnim.interpolate({
+		inputRange: [0, 1],
+		outputRange: ["#261f2e", "#17121c"],
+	});
+
+	const handlePressIn = ()=>{
+		setPressed(true);
+		Animated.timing(bgColorAnim, {
+			toValue: 1,
+			duration: 100,
+			useNativeDriver: false,
+		}).start();
+	};
+	const handlePressOut = ()=>{
+		setPressed(false);
+		Animated.timing(bgColorAnim, {
+			toValue: 0,
+			duration: 100,
+			useNativeDriver: false,
+		}).start();
+	};
+
+	return (
+    <Animated.View
+      onTouchStart={handlePressIn} // Equivalent of onPressIn
+      onTouchEnd={handlePressOut} // Equivalent of onPressOut
+      style={[
+        styles.distroBtn,
+        { backgroundColor } // Apply animated background color
+      ]}
+    >
+      {children}
+    </Animated.View>
+  );
+};
+
+interface NavBarBtnProps {
+	children: React.ReactNode;
+}
+ 
+const NavBarButton: React.FC<NavBarBtnProps> = ({ children }) => {
+	const [pressed, setPressed] = useState(false);
+
+	const fontSizeAnim = useRef(new Animated.Value(16)).current;
+
+	const handlePressIn = ()=>{
+		setPressed(true);
+		Animated.timing(fontSizeAnim, {
+			toValue: 14,
+			duration: 50,
+			useNativeDriver: false,
+		}).start();
+	};
+	const handlePressOut = ()=>{
+		setPressed(false);
+		Animated.timing(fontSizeAnim, {
+			toValue: 16,
+			duration: 50,
+			useNativeDriver: false,
+		}).start();
+	};
 
 	return (
 		<Pressable
 			onPressIn={handlePressIn}
 			onPressOut={handlePressOut}
-			style={[
-				styles.distroBtn,
-				pressed ? styles.activeBtn : null,
-			]}
+			style={styles.navBtn}
 		>
-			{children}
+			<Animated.Text style={[
+					styles.navbarTxt,
+				{ fontSize: fontSizeAnim }
+				]}>
+				{children}
+			</Animated.Text>
 		</Pressable>
 	)
-
 };
 
 const App = () => {
@@ -57,9 +120,11 @@ const App = () => {
 					<Text style={styles.distroBtnTxt}>Arch</Text>
 				</DistroButton>
 			</View>
-      <View style={styles.navbar}>
-			
-      </View>
+      		<View style={styles.navbar}>
+				<NavBarButton>
+					<Text style={styles.navbarTxt}>Create</Text>
+				</NavBarButton>
+      		</View>
 		</View>
 	);
 };
@@ -105,10 +170,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		borderRadius: 15,
-	},
-	activeBtn: {
-		backgroundColor: "#000",
-	},
+	} as ViewStyle,
   navbar: {
 		display: "flex",
     flexDirection: "row",
@@ -117,6 +179,18 @@ const styles = StyleSheet.create({
 		height: 6 * vh,
 		position: "absolute",
 		top: "94%",
+	},
+	navbarTxt: {
+		color: "white",
+		fontFamily: "Montserrat-thin",
+	},
+	navBtn: {
+		height: "100%",
+		width: "33.333%",
+		display: "flex",
+		justifyContent: "center",
+		alignItems: "center",
+		fontSize: 2 * vh,
 	},
 });
 
