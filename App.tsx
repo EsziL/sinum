@@ -1,7 +1,31 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator } from "react-native";
 import React, { useEffect, useState } from 'react';
 import * as Font from 'expo-font';
 
+interface DistroBtnProps {
+	children: React.ReactNode;
+}
+
+const DistroButton: React.FC<DistroBtnProps> = ({ children }) => {
+	const [pressed, setPressed] = useState(false);
+
+	const handlePressIn = ()=>{setPressed(true);};
+	const handlePressOut = ()=>{setPressed(false);};
+
+	return (
+		<Pressable
+			onPressIn={handlePressIn}
+			onPressOut={handlePressOut}
+			style={[
+				styles.distroBtn,
+				pressed ? styles.activeBtn : null,
+			]}
+		>
+			{children}
+		</Pressable>
+	)
+
+};
 
 const App = () => {
 	const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -18,16 +42,24 @@ const App = () => {
 	}, []);
 
 	if (!fontsLoaded) {
-		return <ActivityIndicator size="large" color="#ffffff" />;
-	  }
+		// Add a background to the ActivityIndicator view to see if that renders the background
+		return (
+			<View style={styles.loadingContainer}>
+				<ActivityIndicator size="large" color="#ffffff" />
+			</View>
+		);
+	}
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.col}>
-				<TouchableOpacity style={styles.distroBtn}>
+				<DistroButton>
 					<Text style={styles.distroBtnTxt}>Arch</Text>
-				</TouchableOpacity>
+				</DistroButton>
 			</View>
+      <View style={styles.navbar}>
+			
+      </View>
 		</View>
 	);
 };
@@ -37,42 +69,55 @@ const vh = height / 100;
 const vw = width / 100;
 
 const styles = StyleSheet.create({
-	container: {
-		backgroundColor: "#09060d",
-    width: "100%",
-    height: "100%",
+	loadingContainer: {
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		backgroundColor: "#09060d", // Background for the loading screen
 	},
-
+	container: {
+		flex: 1, 
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "#09060d", // Main container background
+	},
 	col: {
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
-		height: "80%", // Takes 80% of the parent's height
+		height: "80%",
 		width: "100%",
 		position: "absolute",
 		top: "10%",
-	},
 
+	},
 	distroBtnTxt: {
 		color: "white",
 		fontFamily: "Montserrat-normal",
 		fontSize: 5 * vh,
 		fontWeight: "500",
 	},
-
 	distroBtn: {
 		backgroundColor: "#261f2e",
 		width: "80%",
-		height: 20 * vh, // 20% of the viewport height
+		height: 20 * vh, 
 		display: "flex",
 		justifyContent: "center",
 		alignItems: "center",
 		borderRadius: 15,
 	},
-
+	activeBtn: {
+		backgroundColor: "#000",
+	},
+  navbar: {
+		display: "flex",
+    flexDirection: "row",
+		backgroundColor: "#261f2e",
+		width: "100%",
+		height: 6 * vh,
+		position: "absolute",
+		top: "94%",
+	},
 });
 
 export default App;
