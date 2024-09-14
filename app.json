@@ -6,13 +6,16 @@
     "orientation": "portrait",
     "icon": "./src/assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "sinum",
     "splash": {
       "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "package": "com.eszil.sinum",
+      "bundleIdentifier": "com.eszil.sinum"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,6 +26,19 @@
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-dev-launcher",
+        {
+          "launchMode": "most-recent"
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "6cd8f6b5-c7ca-4ee6-b88c-d2208e5024a0"
+      }
     }
   }
 }

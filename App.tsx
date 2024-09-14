@@ -1,13 +1,16 @@
+import 'expo-dev-client';
 import { Animated, View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator, ViewStyle, Image, StatusBar } from "react-native";
 import React, { useEffect, useState, useRef } from 'react';
 import * as Font from 'expo-font';
-import { setStatusBarNetworkActivityIndicatorVisible } from "expo-status-bar";
+import * as FileSystem from 'expo-file-system';
+import { listDir, writeFile, buildDistro } from "./src/main/Linux";
 
 interface DistroBtnProps {
 	children: React.ReactNode;
+	onPress?: () => void;
 }
 
-const DistroButton: React.FC<DistroBtnProps> = ({ children }) => {
+const DistroButton: React.FC<DistroBtnProps> = ({ children, onPress }) => {
 	const [pressed, setPressed] = useState(false);
 
 	const bgColorAnim = useRef(new Animated.Value(0)).current;
@@ -25,6 +28,7 @@ const DistroButton: React.FC<DistroBtnProps> = ({ children }) => {
 			useNativeDriver: false,
 		}).start();
 	};
+	const handlePress = () => { if(onPress) onPress(); };
 	const handlePressOut = ()=>{
 		setPressed(false);
 		Animated.timing(bgColorAnim, {
@@ -32,12 +36,14 @@ const DistroButton: React.FC<DistroBtnProps> = ({ children }) => {
 			duration: 100,
 			useNativeDriver: false,
 		}).start();
+		handlePress();
 	};
+
 
 	return (
     <Animated.View
       onTouchStart={handlePressIn} // Equivalent of onPressIn
-      onTouchEnd={handlePressOut} // Equivalent of onPressOut
+      onTouchEnd={handlePressOut}
       style={[
         styles.distroBtn,
         { backgroundColor } // Apply animated background color
@@ -50,6 +56,7 @@ const DistroButton: React.FC<DistroBtnProps> = ({ children }) => {
 
 interface NavBarBtnProps {
 	children: React.ReactNode;
+	
 }
  
 const NavBarButton: React.FC<NavBarBtnProps> = ({ children }) => {
@@ -74,6 +81,8 @@ const NavBarButton: React.FC<NavBarBtnProps> = ({ children }) => {
 		}).start();
 	};
 
+	
+
 	return (
 		<Pressable
 			onPressIn={handlePressIn}
@@ -89,6 +98,7 @@ const NavBarButton: React.FC<NavBarBtnProps> = ({ children }) => {
 		</Pressable>
 	)
 };
+
 
 const App = () => {
 	const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -113,6 +123,8 @@ const App = () => {
 		);
 	}
 
+	const archBuild = async () => { await buildDistro("arch"); };
+
 	return (
 		<View style={styles.container}>
 			<StatusBar
@@ -120,7 +132,7 @@ const App = () => {
 			barStyle={"light-content"}
 			/>
 			<View style={styles.col}>
-				<DistroButton>
+				<DistroButton onPress={archBuild}>
 					<Text style={styles.distroBtnTxt}>Arch</Text>
 					<Text style={styles.distroBtnCred}>The Arch Linux community</Text>
 					<Text style={styles.distroBtnVersion}>v2024.09.01</Text>
@@ -147,6 +159,8 @@ const App = () => {
 		</View>
 	);
 };
+
+
 
 const { width, height } = Dimensions.get("window");
 const vh = height / 100;
