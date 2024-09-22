@@ -1,16 +1,18 @@
 import 'expo-dev-client';
-import { Animated, View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator, ViewStyle, Image, StatusBar } from "react-native";
+import { Animated, View, Text, StyleSheet, Pressable, Dimensions, ActivityIndicator, ViewStyle, Image, StatusBar, ScrollView } from "react-native";
 import React, { useEffect, useState, useRef } from 'react';
 import * as Font from 'expo-font';
 import * as FileSystem from 'expo-file-system';
 import { listDir, writeFile, buildDistro } from "./src/main/Linux";
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface DistroBtnProps {
 	children: React.ReactNode;
 	onPress?: () => void;
+	style?: object;
 }
 
-const DistroButton: React.FC<DistroBtnProps> = ({ children, onPress }) => {
+const DistroButton: React.FC<DistroBtnProps> = ({ children, onPress, style }) => {
 	const [pressed, setPressed] = useState(false);
 
 	const bgColorAnim = useRef(new Animated.Value(0)).current;
@@ -46,7 +48,8 @@ const DistroButton: React.FC<DistroBtnProps> = ({ children, onPress }) => {
       onTouchEnd={handlePressOut}
       style={[
         styles.distroBtn,
-        { backgroundColor } // Apply animated background color
+        { backgroundColor },
+		style // Apply animated background color
       ]}
     >
       {children}
@@ -108,6 +111,8 @@ const App = () => {
 			await Font.loadAsync({
 				"Montserrat-normal": require("./src/assets/fonts/montserrat/static/Montserrat-Regular.ttf"),
 				"Montserrat-thin": require("./src/assets/fonts/montserrat/static/Montserrat-Thin.ttf"),
+				"Nexa-heavy": require("./src/assets/fonts/nexa/Nexa-Heavy.ttf"), 
+				"Nexa-extralight": require("./src/assets/fonts/nexa/Nexa-ExtraLight.ttf"),
 			});
 			setFontsLoaded(true);
 		}
@@ -131,8 +136,13 @@ const App = () => {
 			backgroundColor={"#09060d"}
 			barStyle={"light-content"}
 			/>
-			<View style={styles.col}>
-				<DistroButton onPress={archBuild}>
+			<Text style={styles.mainTxt}>Create a system</Text>
+			<LinearGradient
+				colors={['rgba(9,6,13,1)', 'rgba(9,6,13,0)']}
+				style={styles.colGradientTop}
+			/>
+			<ScrollView style={styles.col} contentContainerStyle={styles.col2}>
+				<DistroButton onPress={archBuild} style={{ marginTop: 20 }}>
 					<Text style={styles.distroBtnTxt}>Arch</Text>
 					<Text style={styles.distroBtnCred}>The Arch Linux community</Text>
 					<Text style={styles.distroBtnVersion}>v2024.09.01</Text>
@@ -150,7 +160,17 @@ const App = () => {
 					<Text style={styles.distroBtnVersion}>v24.04.1 LTS</Text>
 					<Image source={require('./src/assets/ubuntu.png')} style={styles.distroImg}></Image>
 				</DistroButton>
-			</View>
+				<DistroButton style={{ marginBottom: 20 }}>
+					<Text style={styles.distroBtnTxt}>Fedora</Text>
+					<Text style={styles.distroBtnCred}>Fedora Project</Text>
+					<Text style={styles.distroBtnVersion}>v40</Text>
+					<Image source={require('./src/assets/fedora.png')} style={styles.distroImg}></Image>
+				</DistroButton>
+			</ScrollView>
+			<LinearGradient
+				colors={['rgba(9,6,13,0)', 'rgba(9,6,13,1)']}
+				style={styles.colGradientBottom}
+			/>
       		<View style={styles.navbar}>
 				<NavBarButton>
 					<Text style={styles.navbarTxt}>Create</Text>
@@ -181,13 +201,30 @@ const styles = StyleSheet.create({
 	},
 	col: {
 		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
 		height: "80%",
 		width: "100%",
+		flexDirection: "column",
 		position: "absolute",
 		top: "10%",
+	},
+	col2: {
 		rowGap: 20,
+		flexGrow: 1,
+		alignItems: "center",
+	},
+	colGradientTop: {
+		height: 20, 
+		position: "absolute",
+		width: "100%",
+		zIndex: 1,
+		top: "10%",
+	},
+	colGradientBottom: {
+		height: 20, 
+		position: "absolute",
+		width: "100%",
+		zIndex: 1,
+		top: "87.5%",
 	},
 	distroBtnTxt: {
 		color: "white",
@@ -245,6 +282,16 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		fontSize: 2 * vh,
+	},
+	mainTxt: {
+		color: "white",
+		fontFamily: "Nexa-heavy",
+		zIndex: 2,
+		fontSize: 4.5 * vh,
+		width: "100%",
+		textAlign: "center",
+		position: "absolute",
+		top: "3.5%",
 	},
 });
 

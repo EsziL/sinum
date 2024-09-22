@@ -1,6 +1,8 @@
 import * as FileSystem from 'expo-file-system';
+import { useEffect, useState } from 'react';
 import { NativeModules } from 'react-native';
 const { ProotModule } = NativeModules;
+
 
 export const listDir = async (uri: string | null) =>{
 	if (uri === null) return;
@@ -9,6 +11,8 @@ export const listDir = async (uri: string | null) =>{
 
 export const writeFile = async ()=>{
 };
+
+
 
 export const buildDistro = async (type: string)=>{
 
@@ -19,4 +23,5 @@ export const buildDistro = async (type: string)=>{
     console.log(FileSystem.documentDirectory);
     console.log(await listDir(FileSystem.documentDirectory));
     console.log(await FileSystem.readAsStringAsync(`${FileSystem.documentDirectory}/README.md`));
+    console.log("yello!!! you know this would be the part where i launch the distro and all but i kinda have to figure out how to do that first cuz im not sure yet");
 };
